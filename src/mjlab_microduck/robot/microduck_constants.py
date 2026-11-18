@@ -320,10 +320,10 @@ MICRODUCK_WALK_ROLLERS_ROBOT_CFG = EntityCfg(
 if __name__ == "__main__":
     import mujoco.viewer as viewer
     from mjlab.scene import Scene, SceneCfg
-    from mjlab.terrains import TerrainImporterCfg
+    from mjlab.terrains import TerrainEntityCfg
 
     SCENE_CFG = SceneCfg(
-        terrain=TerrainImporterCfg(terrain_type="plane"),
+        terrain=TerrainEntityCfg(terrain_type="plane"),
         entities={"robot": MICRODUCK_WALK_ROBOT_CFG},
     )
 
