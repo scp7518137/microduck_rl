@@ -27,14 +27,14 @@ HOME_FRAME = EntityCfg.InitialStateCfg(
         # hip_pitch 30°→26.24°, ankle 30°→25.95°, knee 0°→0.28°. Matches the
         # STAND keyframe in scene.xml / scene_walk.xml.
         r".*leg_joint_01.*": 0.0,
-        r".*lleg_joint_02.*": -0.0873,
-        r".*rleg_joint_02.*": 0.0873,
-        r".*lleg_joint_03.*": -0.4579,
-        r".*rleg_joint_03.*": 0.4579,
-        r".*lleg_joint_04.*": -0.0049,
-        r".*rleg_joint_04.*": 0.0049,
-        r".*lleg_joint_05.*": 0.4530,
-        r".*rleg_joint_05.*": -0.4530,
+        r".*lleg_joint_02.*": 0.0,
+        r".*rleg_joint_02.*": 0.0,
+        r".*lleg_joint_03.*": 0.0,
+        r".*rleg_joint_03.*": 0.0,
+        r".*lleg_joint_04.*": 0.0,
+        r".*rleg_joint_04.*": 0.0,
+        r".*lleg_joint_05.*": 0.0,
+        r".*rleg_joint_05.*": 0.0,
         # Head
         r".*neck_joint_01.*": 0.0,
         r".*neck_joint_02.*": 0.0,
