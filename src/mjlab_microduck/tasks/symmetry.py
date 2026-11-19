@@ -65,10 +65,10 @@ SYMMETRY_CFG = {
 # ---------------------------------------------------------------------------
 
 # Within a 14-joint block: left (0-4) <-> right (9-13), midline (5-8) fixed
-_JOINT_PERM: list[int] = [9, 10, 11, 12, 13, 5, 6, 7, 8, 0, 1, 2, 3, 4]
+_JOINT_PERM: list[int] = [0, 1, 2, 8, 9, 10, 11, 12, 3, 4, 5, 6, 7]
 
 # Signs applied AFTER permutation for each joint position
-_JOINT_SIGN: list[float] = [-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1]
+_JOINT_SIGN: list[float] = [1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ]
 
 # Full 61-dim actor obs permutation (all command slots mirror in place)
 _OBS_PERM: list[int] = (

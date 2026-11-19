@@ -121,8 +121,8 @@ from mjlab.tasks.velocity.velocity_env_cfg import make_velocity_env_cfg
 from mjlab.utils.noise import UniformNoiseCfg as Unoise
 
 from mjlab_microduck.robot.mymicroduck_constants import MICRODUCK_WALK_BACKLASH_ROBOT_CFG
-from mjlab_microduck.tasks import mdp as microduck_mdp
-from mjlab_microduck.tasks.symmetry import PpoWithSymmetryCfg, SYMMETRY_CFG
+from mjlab_microduck.tasks import mymdp as microduck_mdp
+from mjlab_microduck.tasks.mysymmetry import PpoWithSymmetryCfg, SYMMETRY_CFG
 
 
 # Microduck 专用粗糙地形：比默认的 ROUGH_TERRAINS_CFG 温和得多。
