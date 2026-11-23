@@ -151,7 +151,7 @@ if TYPE_CHECKING:
 
 _DEFAULT_ASSET_CFG = SceneEntityCfg("robot")
 
-# 匹配 4 个颈部/头部受驱关节的名称模式。供 head_pose
+# 匹配 3 个颈部受驱关节的名称模式。供 head_pose
 # tracking reward 以及 UniformPoseCommand 的 asset 挂钩使用。
 # _NECK_JOINT_PATTERNS = [r".*neck_pitch.*", r".*head_pitch.*", r".*head_yaw.*", r".*head_roll.*"]
 _NECK_JOINT_PATTERNS = [r"neck_joint_.*"]
@@ -294,7 +294,7 @@ def reset_action_history(
     if hasattr(env, '_prev_leg_actions'):
         # 设为当前动作（若还没有动作则为 0）
         if hasattr(env, 'action_manager') and env.action_manager.action is not None:
-            leg_joint_indices = list(range(0, 5)) + list(range(8, 13))
+            leg_joint_indices = list(range(3, 13))
             env._prev_leg_actions[env_ids] = env.action_manager.action[env_ids][:, leg_joint_indices]
         else:
             env._prev_leg_actions[env_ids] = 0.0
@@ -302,7 +302,7 @@ def reset_action_history(
     # 重置颈部 action rate 缓存
     if hasattr(env, '_prev_neck_actions'):
         if hasattr(env, 'action_manager') and env.action_manager.action is not None:
-            neck_joint_indices = list(range(5, 8))
+            neck_joint_indices = list(range(0, 3))
             env._prev_neck_actions[env_ids] = env.action_manager.action[env_ids][:, neck_joint_indices]
         else:
             env._prev_neck_actions[env_ids] = 0.0
@@ -310,7 +310,7 @@ def reset_action_history(
     # 重置腿部 action 加速度缓存
     if hasattr(env, '_prev_leg_actions_for_acc'):
         if hasattr(env, 'action_manager') and env.action_manager.action is not None:
-            leg_joint_indices = list(range(0, 5)) + list(range(8, 13))
+            leg_joint_indices = list(range(3, 13))
             current_action = env.action_manager.action[env_ids][:, leg_joint_indices]
             env._prev_leg_actions_for_acc[env_ids] = current_action
             env._prev_prev_leg_actions_for_acc[env_ids] = current_action
@@ -321,7 +321,7 @@ def reset_action_history(
     # 重置颈部 action 加速度缓存
     if hasattr(env, '_prev_neck_actions_for_acc'):
         if hasattr(env, 'action_manager') and env.action_manager.action is not None:
-            neck_joint_indices = list(range(5, 8))
+            neck_joint_indices = list(range(0, 3))
             current_action = env.action_manager.action[env_ids][:, neck_joint_indices]
             env._prev_neck_actions_for_acc[env_ids] = current_action
             env._prev_prev_neck_actions_for_acc[env_ids] = current_action
@@ -398,7 +398,7 @@ def leg_action_rate_l2(
 ) -> torch.Tensor:
     """
     惩罚腿部动作的变化率 (action_t - action_{t-1})。
-    腿部关节是索引 0-4 和 9-13（共 10 个关节）。
+    腿部关节是索引 3-12（右腿 3-7、左腿 8-12，共 10 个关节）。
 
     Args:
         env: 环境
@@ -408,7 +408,7 @@ def leg_action_rate_l2(
         形状为 (num_envs,) 的 penalty 张量
     """
     # 获取腿部关节索引
-    leg_joint_indices = list(range(0, 5)) + list(range(8, 13))
+    leg_joint_indices = list(range(3, 13))
 
     # 只获取腿部关节的当前和上一时刻动作
     # 动作存在 env 中（假设该动作可用）
@@ -437,7 +437,7 @@ def neck_action_rate_l2(
 ) -> torch.Tensor:
     """
     惩罚颈部动作的变化率 (action_t - action_{t-1})。
-    颈部关节是索引 5-8（共 4 个关节）。
+    颈部关节是索引 0-2（共 3 个关节）。
 
     Args:
         env: 环境
@@ -447,7 +447,7 @@ def neck_action_rate_l2(
         形状为 (num_envs,) 的 penalty 张量
     """
     # 获取颈部关节索引
-    neck_joint_indices = list(range(5, 8))
+    neck_joint_indices = list(range(0, 3))
 
     # 只获取颈部关节的当前和上一时刻动作
     if not hasattr(env, 'action_manager'):
@@ -474,7 +474,7 @@ def leg_action_acceleration_l2(
 ) -> torch.Tensor:
     """
     惩罚腿部动作加速度 (action_t - 2*action_{t-1} + action_{t-2})。
-    腿部关节是索引 0-4 和 9-13（共 10 个关节）。
+    腿部关节是索引 3-12（右腿 3-7、左腿 8-12，共 10 个关节）。
 
     Args:
         env: 环境
@@ -484,7 +484,7 @@ def leg_action_acceleration_l2(
         形状为 (num_envs,) 的 penalty 张量
     """
     # 获取腿部关节索引
-    leg_joint_indices = list(range(0, 5)) + list(range(8, 13))
+    leg_joint_indices = list(range(3, 13))
 
     if not hasattr(env, 'action_manager'):
         return torch.zeros(env.num_envs, device=env.device)
@@ -513,7 +513,7 @@ def neck_action_acceleration_l2(
 ) -> torch.Tensor:
     """
     惩罚颈部动作加速度 (action_t - 2*action_{t-1} + action_{t-2})。
-    颈部关节是索引 5-8（共 4 个关节）。
+    颈部关节是索引 0-2（共 3 个关节）。
 
     Args:
         env: 环境
@@ -523,7 +523,7 @@ def neck_action_acceleration_l2(
         形状为 (num_envs,) 的 penalty 张量
     """
     # 获取颈部关节索引
-    neck_joint_indices = list(range(5, 8))
+    neck_joint_indices = list(range(0, 3))
 
     if not hasattr(env, 'action_manager'):
         return torch.zeros(env.num_envs, device=env.device)
@@ -1498,7 +1498,7 @@ def neck_joint_vel_l2(
 ) -> torch.Tensor:
     """
     惩罚颈部关节速度以保持头部稳定。
-    颈部关节是索引 5-8（共 4 个关节）。
+    颈部关节是索引 0-2（共 3 个关节）。
 
     Args:
         env: 环境
@@ -1509,9 +1509,9 @@ def neck_joint_vel_l2(
     """
     asset: Entity = env.scene[asset_cfg.name]
 
-    # 获取颈部关节索引（neck_pitch、head_pitch、head_yaw、head_roll）。
+    # 获取颈部关节索引（neck_joint_01/02/03，即 0-2）。
     # 伺服视图：passive_* 关节（backlash、轮子）不会使索引偏移。
-    neck_joint_indices = list(range(5, 8))
+    neck_joint_indices = list(range(0, 3))
     joint_vel = _servo_joint_vel(env, asset)
     neck_joint_vel = joint_vel[:, neck_joint_indices]
 
@@ -1524,7 +1524,7 @@ def leg_joint_vel_l2(
 ) -> torch.Tensor:
     """
     惩罚腿部关节速度以鼓励更平滑、更低动态的动作。
-    腿部关节是索引 0-4 和 8-13（共 10 个关节）。
+    腿部关节是索引 3-12（右腿 3-7、左腿 8-12，共 10 个关节）。
 
     Args:
         env: 环境
@@ -1535,9 +1535,9 @@ def leg_joint_vel_l2(
     """
     asset: Entity = env.scene[asset_cfg.name]
 
-    # 获取腿部关节索引（左髋-踝：0-4，右髋-踝：9-13）。
+    # 获取腿部关节索引（右腿 3-7、左腿 8-12，即 3-12）。
     # 伺服视图：passive_* 关节（backlash、轮子）不会使索引偏移。
-    leg_joint_indices = list(range(0, 5)) + list(range(8, 13))
+    leg_joint_indices = list(range(3, 13))
     joint_vel = _servo_joint_vel(env, asset)
     leg_joint_vel = joint_vel[:, leg_joint_indices]
 
@@ -3893,8 +3893,8 @@ def joint_vel_l2_when_standing(
     total_speed = torch.norm(command[:, :2], dim=1) + torch.abs(command[:, 2])
     is_standing_cmd = (total_speed < command_threshold).float()
 
-    leg_indices = list(range(0, 5)) + list(range(8, 13))
-    joint_vel = asset.data.joint_vel[:, leg_indices]
+    leg_indices = list(range(3, 13))
+    joint_vel = _servo_joint_vel(env, asset)[:, leg_indices]
     vel_sq = torch.sum(joint_vel ** 2, dim=-1)
 
     return is_standing_cmd * vel_sq
@@ -5368,7 +5368,7 @@ def head_pose_tracking(
         ids, names = asset.find_joints_by_actuator_names(_NECK_JOINT_PATTERNS)
         env._head_pose_neck_ids = torch.tensor(ids, device=env.device, dtype=torch.long)
         name_to_id = {n: i for i, n in enumerate(asset.joint_names)}
-        bl = [name_to_id.get(f"passive_{n}_backlash") for n in names]
+        bl = [name_to_id.get(f"{n}_backlash") for n in names]
         env._head_pose_bl_ids = torch.tensor(
             [0 if b is None else b for b in bl], device=env.device, dtype=torch.long
         )
@@ -6340,7 +6340,7 @@ def _backlash_encoder_ids(
     name_to_id = {n: i for i, n in enumerate(names)}
     bl_ids, mask = [], []
     for i in main_ids:
-        bl = name_to_id.get(f"passive_{names[i]}_backlash")
+        bl = name_to_id.get(f"{names[i]}_backlash")
         bl_ids.append(0 if bl is None else bl)
         mask.append(0.0 if bl is None else 1.0)
 

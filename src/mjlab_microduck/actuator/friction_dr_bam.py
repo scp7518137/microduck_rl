@@ -87,7 +87,7 @@ class BacklashEncoderBamActuator(FrictionDRBamActuator):
         name_to_local = {n: i for i, n in enumerate(self.entity.joint_names)}
         ids, mask = [], []
         for name in self._target_names:
-            bl_id = name_to_local.get(f"passive_{name}_backlash")
+            bl_id = name_to_local.get(f"{name}_backlash")
             ids.append(0 if bl_id is None else bl_id)
             mask.append(0.0 if bl_id is None else 1.0)
         self._backlash_joint_ids = torch.tensor(ids, dtype=torch.long, device=device)

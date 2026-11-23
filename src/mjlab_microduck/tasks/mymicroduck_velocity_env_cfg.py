@@ -283,6 +283,7 @@ def make_microduck_velocity_env_cfg(
     cfg.scene.entities = {"robot": MICRODUCK_WALK_BACKLASH_ROBOT_CFG}
     cfg.scene.sensors = (feet_ground_cfg, self_collision_cfg, foot_height_scan_cfg)
     cfg.viewer.body_name = "trunk_base"
+    cfg.decimation = 13
 
     # 动作配置
     joint_pos_action = cfg.actions["joint_pos"]
@@ -345,7 +346,7 @@ def make_microduck_velocity_env_cfg(
     # air_time 窗口 [0.125, 0.300] s。注意：零指令下静止站立由 standing_envs
     # curriculum 教会（到约 iter 2000 时 → 25% 站立环境），
     # 而非通过显式的静止/不迈步 reward 项。
-    cfg.rewards["air_time"].weight = 3.0
+    cfg.rewards["air_time"].weight = 10.0 # 3.0 -> 8.0
     cfg.rewards["air_time"].params["command_threshold"] = 0.01
     cfg.rewards["air_time"].params["threshold_min"] = 0.125
     cfg.rewards["air_time"].params["threshold_max"] = 0.300
@@ -950,7 +951,8 @@ MicroduckRlCfg = RslRlOnPolicyRunnerCfg(
         max_grad_norm=1.0,
         symmetry_cfg=SYMMETRY_CFG if ENABLE_SYMMETRY else None,
     ),
-    wandb_project="mjlab_microduck",
+    logger="tensorboard",
+    # wandb_project="mjlab_microduck",
     experiment_name="velocity",  # 目录名
     run_name="velocity",  # 在 wandb 中追加到时间戳后：<datetime>_velocity
     save_interval=250,
